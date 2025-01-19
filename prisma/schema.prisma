@@ -11,7 +11,7 @@ datasource db {
 
 model Resume {
   id     String @id @default(cuid())
-  userId String
+  userId String @map("user_id")
 
   title       String?
   description String?
@@ -28,7 +28,8 @@ model Resume {
   phone       String?
   email       String?
 
-  WorkExperience WorkExperience[]
+  workExperience WorkExperience[]
+  education      Education[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,8 +42,8 @@ model WorkExperience {
 
   position    String?
   company     String?
-  startDate   DateTime?
-  endDate     DateTime?
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
   description String?
 
   resumeId String
@@ -52,4 +53,22 @@ model WorkExperience {
   updatedAt DateTime @updatedAt
 
   @@map("work_experience")
+}
+
+model Education {
+  id String @id @default(cuid())
+
+  degree    String?
+  school    String?
+  startDate DateTime? @map("start_date")
+  endDate   DateTime? @map("end_date")
+  grade     String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("education")
 }

@@ -13,19 +13,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef } from "react";
 import { EditorFormProps } from "@/lib/types";
-import { workExperienceSchema, workExperienceValues } from "@/lib/validation";
+import { educationValues, educationSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { GripHorizontal, TrashIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function WorkExperienceForm({
+export default function EducationForm({
   resumeData,
   setResumeData,
 }: EditorFormProps) {
-  const form = useForm<workExperienceValues>({
-    resolver: zodResolver(workExperienceSchema),
+  const form = useForm<educationValues>({
+    resolver: zodResolver(educationSchema),
     defaultValues: {
-      workExperiences: resumeData.workExperiences || [{}],
+      education: resumeData.education || [{}],
     },
   });
 
@@ -33,7 +33,7 @@ export default function WorkExperienceForm({
 
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
-    name: "workExperiences",
+    name: "education",
   });
 
   useEffect(() => {
@@ -48,8 +48,7 @@ export default function WorkExperienceForm({
       if (!isValid) return;
       setResumeData({
         ...resumeData,
-        workExperiences:
-          values.workExperiences?.filter((exp) => exp !== undefined) || [],
+        education: values.education?.filter((edu) => edu !== undefined) || [],
       });
     });
     return () => unsubscribe();
@@ -58,15 +57,15 @@ export default function WorkExperienceForm({
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold">Work Experience</h2>
+        <h2 className="text-2xl font-semibold">Education</h2>
         <p className="text-sm text-muted-foreground">
-          Add your work experience
+          Add your educational qualifications
         </p>
       </div>
       <Form {...form}>
         <form className="space-y-6">
           {fields.map((field, index) => (
-            <WorkExperienceField
+            <EducationField
               key={field.id}
               index={index}
               form={form}
@@ -80,15 +79,15 @@ export default function WorkExperienceForm({
               type="button"
               onClick={() =>
                 append({
-                  position: "",
-                  company: "",
+                  degree: "",
+                  school: "",
                   startDate: "",
                   endDate: "",
-                  description: "",
+                  grade: "",
                 })
               }
             >
-              Add another work experience
+              Add another qualification
             </Button>
           </div>
         </form>
@@ -97,29 +96,29 @@ export default function WorkExperienceForm({
   );
 }
 
-interface WorkExperienceFieldProps {
-  form: UseFormReturn<workExperienceValues>;
+interface EducationFieldProps {
+  form: UseFormReturn<educationValues>;
   index: number;
   remove: (index: number) => void;
   ref: React.Ref<HTMLInputElement>;
   move: (from: number, to: number) => void;
 }
 
-function WorkExperienceField({
+function EducationField({
   form,
   index,
   remove,
   ref,
   move,
-}: WorkExperienceFieldProps) {
+}: EducationFieldProps) {
   return (
     <div className="flex flex-col space-y-3 rounded-md border bg-background p-3">
       <div className="flex flex-row justify-between gap-2">
-        <span className="font-semibold">Work Experience {index + 1}</span>
+        <span className="font-semibold">Education {index + 1}</span>
         <div className="flex gap-4">
           <GripHorizontal
             className="size-5 cursor-grab text-muted-foreground"
-            onDragCapture={() => move(index, index + 1)}
+            onDrag={() => move(index, index + 1)}
           />
           <TrashIcon
             className="size-5 cursor-pointer text-muted-foreground"
@@ -128,13 +127,13 @@ function WorkExperienceField({
         </div>
       </div>
       <FormField
-        name={`workExperiences.${index}.position`}
+        name={`education.${index}.degree`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Job Title</FormLabel>
+            <FormLabel>Degree</FormLabel>
             <FormControl>
               <Input
-                placeholder="Job Title"
+                placeholder="Degree"
                 {...field}
                 autoFocus={true}
                 ref={ref}
@@ -146,12 +145,12 @@ function WorkExperienceField({
         )}
       />
       <FormField
-        name={`workExperiences.${index}.company`}
+        name={`education.${index}.school`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Company</FormLabel>
+            <FormLabel>School</FormLabel>
             <FormControl>
-              <Input placeholder="Company" {...field} />
+              <Input placeholder="University/College Name" {...field} />
             </FormControl>
             <FormMessage></FormMessage>
           </FormItem>
@@ -159,7 +158,7 @@ function WorkExperienceField({
       />
       <div className="grid grid-cols-2 gap-2">
         <FormField
-          name={`workExperiences.${index}.startDate`}
+          name={`education.${index}.startDate`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Start Date</FormLabel>
@@ -178,7 +177,7 @@ function WorkExperienceField({
           )}
         />
         <FormField
-          name={`workExperiences.${index}.endDate`}
+          name={`education.${index}.endDate`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>End Date</FormLabel>
@@ -198,19 +197,19 @@ function WorkExperienceField({
         />
       </div>
       <FormField
-        name={`workExperiences.${index}.description`}
+        name={`education.${index}.grade`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
+            <FormLabel>Grade</FormLabel>
             <FormControl>
               <Textarea
-                placeholder="Description"
+                placeholder="Grade"
                 {...field}
                 className="resize-none"
                 rows={4}
               />
             </FormControl>
-            <FormDescription>Brief description of your work!</FormDescription>
+            <FormDescription>Grade in either % or CGPA</FormDescription>
             <FormMessage></FormMessage>
           </FormItem>
         )}
