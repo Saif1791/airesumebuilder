@@ -6,6 +6,7 @@ import { steps } from "./steps";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { resumeValues } from "@/lib/validation";
+import ResumePreviewSection from "./ResumePreviewSection";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -47,9 +48,10 @@ export default function Page() {
             )}
           </div>
           <div className="grow md:border-r"></div>
-          <div className="hidden md:flex md:w-1/2">
-            <pre>{JSON.stringify(resumeData, null, 2)}</pre>
-          </div>
+          <ResumePreviewSection
+            resumeData={resumeData}
+            setResumeData={setResumeData}
+          />
         </div>
       </main>
       <Footer currentStep={currentStep} setCurrentStep={setStep} />

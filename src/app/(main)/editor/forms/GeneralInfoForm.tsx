@@ -30,14 +30,13 @@ export default function GeneralInfoForm({
       const isValid = await form.trigger();
       if (!isValid) return;
       setResumeData({ ...resumeData, ...values });
-      
     });
     return () => unsubscribe();
   }, [form, resumeData, setResumeData]);
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <div className="space-y-3 text-center">
+      <div className="space-y-3">
         <h2 className="text-2xl font-semibold">General Info</h2>
         <p className="text-sm text-muted-foreground">
           This will appear on your Resume
