@@ -55,6 +55,16 @@ export const workExperienceSchema = z.object({
   ),
 });
 
+export const socialSchema = z.object({
+  github: optionalString,
+  linkedin: optionalString,
+  X: optionalString,
+  medium: optionalString,
+  portfolio: optionalString,
+});
+
+export type socialValues = z.infer<typeof socialSchema>;
+
 export type workExperienceValues = z.infer<typeof workExperienceSchema>;
 
 export const educationSchema = z.object({
@@ -92,6 +102,7 @@ export const resumeSchema = z.object({
   ...educationSchema.shape,
   ...skillsSchema.shape,
   ...summarySchema.shape,
+  ...socialSchema.shape,
 });
 
 export type resumeValues = Omit<z.infer<typeof resumeSchema>, "photo"> & {

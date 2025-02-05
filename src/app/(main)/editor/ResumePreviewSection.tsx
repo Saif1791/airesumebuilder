@@ -10,7 +10,6 @@ export default function ResumePreviewSection({
   resumeData,
   setResumeData,
 }: ResumePreviewSectionProps) {
-    
   return (
     <div className="hidden md:flex md:w-1/2">
       <div className="flex w-full justify-center overflow-y-auto bg-secondary p-3">
