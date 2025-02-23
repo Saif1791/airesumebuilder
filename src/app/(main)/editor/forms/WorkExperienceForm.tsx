@@ -25,7 +25,7 @@ export default function WorkExperienceForm({
   const form = useForm<workExperienceValues>({
     resolver: zodResolver(workExperienceSchema),
     defaultValues: {
-      workExperiences: resumeData.workExperiences || [{}],
+      workExperiences: resumeData.workExperiences || Array(0),
     },
   });
 

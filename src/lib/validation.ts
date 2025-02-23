@@ -42,17 +42,27 @@ export const personalInfoSchema = z.object({
 export type personalInfoValues = z.infer<typeof personalInfoSchema>;
 
 export const workExperienceSchema = z.object({
-  workExperiences: z.array(
-    z
-      .object({
-        position: optionalString,
-        company: optionalString,
-        startDate: z.string().date().optional().or(z.literal("")), //YYYY-MM-DD
-        endDate: z.string().date().optional().or(z.literal("")),
-        description: optionalString,
-      })
-      .optional(),
-  ),
+  workExperiences: z
+    .array(
+      z
+        .object({
+          position: optionalString,
+          company: optionalString,
+          startDate: z.string().optional().or(z.literal("")), // YYYY-MM-DD
+          endDate: z.string().optional().or(z.literal("")),
+          description: optionalString,
+        })
+        .superRefine(({ startDate, endDate }, ctx) => {
+          if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+            ctx.addIssue({
+              path: ["endDate"],
+              message: "End date must be after start date",
+              code: "custom",
+            });
+          }
+        }),
+    )
+    .optional(),
 });
 
 export const socialSchema = z.object({
@@ -68,17 +78,27 @@ export type socialValues = z.infer<typeof socialSchema>;
 export type workExperienceValues = z.infer<typeof workExperienceSchema>;
 
 export const educationSchema = z.object({
-  education: z.array(
-    z
-      .object({
-        degree: optionalString,
-        school: optionalString,
-        grade: optionalString,
-        startDate: z.string().date().optional().or(z.literal("")), //YYYY-MM-DD
-        endDate: z.string().date().optional().or(z.literal("")),
-      })
-      .optional(),
-  ),
+  education: z
+    .array(
+      z
+        .object({
+          degree: optionalString,
+          school: optionalString,
+          grade: optionalString,
+          startDate: z.string().optional().or(z.literal("")), // YYYY-MM-DD
+          endDate: z.string().optional().or(z.literal("")),
+        })
+        .superRefine(({ startDate, endDate }, ctx) => {
+          if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+            ctx.addIssue({
+              path: ["endDate"],
+              message: "End date must be after start date",
+              code: "custom",
+            });
+          }
+        }),
+    )
+    .optional(),
 });
 
 export type educationValues = z.infer<typeof educationSchema>;

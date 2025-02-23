@@ -36,6 +36,7 @@ export default function ResumePreview({
         <PersonalInfoHeader resumeData={resumeData} />
         <SummarySection resumeData={resumeData} />
         <WorkExperienceSection resumeData={resumeData} />
+        <EducationExperienceSection resumeData={resumeData} />
       </div>
     </div>
   );
@@ -136,15 +137,9 @@ function PersonalInfoHeader({ resumeData }: ResumeSectionProps) {
 
 function SummarySection({ resumeData }: ResumeSectionProps) {
   const { summary } = resumeData;
-  console.log("Summary:", summary);
 
-  if (
-    !summary ||
-    summary === undefined ||
-    summary === "" ||
-    summary.length <= 0
-  ) {
-    return null;
+  if (!summary?.trim() || summary === "undefined") {
+    return;
   } else {
     return (
       <>
@@ -152,12 +147,41 @@ function SummarySection({ resumeData }: ResumeSectionProps) {
         <div className="break-inside-avoid space-y-3">
           <p className="text-lg font-semibold">Professional Profile</p>
           <div className="text-sm">
-            <p className="whitespace-pre-wrap break-words">{summary}</p>
+            <p className="whitespace-pre-wrap break-words">{summary?.trim()}</p>
           </div>
         </div>
       </>
     );
   }
+}
+
+function extractYearAndMonth(
+  dateString: string,
+): { year: number; monthName: string } | null {
+  if (!dateString) return null;
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return null;
+
+  const year = date.getFullYear();
+  const monthIndex = date.getMonth();
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  return { year, monthName: monthNames[monthIndex] };
 }
 
 function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
@@ -167,13 +191,14 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
     (exp) => exp && Object.values(exp).filter(Boolean).length > 0,
   );
 
-  if (workExperiencesNotEmpty?.length === 0) return null;
+  if (workExperiencesNotEmpty?.length <= 0 || workExperiences === undefined)
+    return;
 
   return (
     <>
       <hr className="border-2" />
       <div className="break-inside-avoid space-y-3">
-        <p className="text-lg font-semibold">Professional Profile</p>
+        <p className="text-lg font-semibold">Work Experience</p>
         <div className="text-sm">
           <p className="whitespace-pre-wrap break-words">
             {workExperiences?.map((workExperience) => (
@@ -182,13 +207,74 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
                   <div className="flex flex-row justify-between">
                     <p className="font-semibold">{workExperience?.company}</p>
                     <div className="flex flex-row">
-                      <p>{workExperience?.startDate}</p>
+                      <p>
+                        {workExperience?.startDate
+                          ? `${extractYearAndMonth(workExperience.startDate)?.monthName}, ${extractYearAndMonth(workExperience.startDate)?.year}`
+                          : null}
+                      </p>
+
                       <p> - </p>
-                      <p>{workExperience?.endDate}</p>
+                      <p>
+                        {workExperience?.endDate
+                          ? `${extractYearAndMonth(workExperience.endDate)?.monthName}, ${extractYearAndMonth(workExperience.endDate)?.year}`
+                          : `${workExperience?.startDate}`
+                            ? "Currently Working"
+                            : null}
+                      </p>
                     </div>
                   </div>
                   <p className="text-xs">{workExperience?.position}</p>
                   <p>{workExperience?.description}</p>
+                </div>
+              </>
+            ))}
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function EducationExperienceSection({ resumeData }: ResumeSectionProps) {
+  const { education } = resumeData;
+
+  const educationNotEmpty = education?.filter(
+    (exp) => exp && Object.values(exp).filter(Boolean).length > 0,
+  );
+
+  if (educationNotEmpty?.length <= 0 || education === undefined) return;
+
+  return (
+    <>
+      <hr className="border-2" />
+      <div className="break-inside-avoid space-y-3">
+        <p className="text-lg font-semibold">Education</p>
+        <div className="text-sm">
+          <p className="whitespace-pre-wrap break-words">
+            {education?.map((education) => (
+              <>
+                <div className="flex flex-col">
+                  <div className="flex flex-row justify-between">
+                    <p className="font-semibold">{education?.degree}</p>
+                    <div className="flex flex-row">
+                      <p>
+                        {education?.startDate
+                          ? `${extractYearAndMonth(education.startDate)?.monthName}, ${extractYearAndMonth(education.startDate)?.year}`
+                          : null}
+                      </p>
+
+                      <p> - </p>
+                      <p>
+                        {education?.endDate
+                          ? `${extractYearAndMonth(education.endDate)?.monthName}, ${extractYearAndMonth(education.endDate)?.year}`
+                          : `${education?.startDate}`
+                            ? "Currently Studying"
+                            : null}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs">{education?.school}</p>
+                  <p>{education?.grade ? `GPA: ${education?.grade}` : null}</p>
                 </div>
               </>
             ))}

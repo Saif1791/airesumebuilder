@@ -16,7 +16,6 @@ import { EditorFormProps } from "@/lib/types";
 import { educationValues, educationSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { GripHorizontal, TrashIcon } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
 
 export default function EducationForm({
   resumeData,
@@ -25,7 +24,7 @@ export default function EducationForm({
   const form = useForm<educationValues>({
     resolver: zodResolver(educationSchema),
     defaultValues: {
-      education: resumeData.education || [{}],
+      education: resumeData.education || Array(0),
     },
   });
 
@@ -202,11 +201,13 @@ function EducationField({
           <FormItem>
             <FormLabel>Grade</FormLabel>
             <FormControl>
-              <Textarea
+              <Input
                 placeholder="Grade"
                 {...field}
-                className="resize-none"
-                rows={4}
+                type="number"
+                min="1"
+                max="100"
+                step="0.5"
               />
             </FormControl>
             <FormDescription>Grade in either % or CGPA</FormDescription>
